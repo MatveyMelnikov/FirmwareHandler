@@ -85,9 +85,26 @@ public class Main {
                 Firmware_Handler.getEraseCommand();
 
         // Send erase command
-        //send_command(eraseCommand);
-        for (Firmware_Handler.Firmware_Command command : commands)
-            send_command(command);
+        selected_port.writeBytes(eraseCommand.command_type, 1);
+        if (!receive_status())
+            throw new Exception("Response is not ACK");
+        send_command(eraseCommand);
+
+        selected_port.writeBytes(commands.get(0).command_type, 1);
+        if (!receive_status())
+            throw new Exception("Response is not ACK");
+//        for (Firmware_Handler.Firmware_Command command : commands)
+//            send_command(command);
+
+        int num = 0;
+        for (; num < commands.size(); num++)
+            send_command(commands.get(num));
+
+//        send_command(commands.get(0));
+//        send_command(commands.get(1));
+//        send_command(commands.get(2));
+
+        selected_port.writeBytes(Firmware_Handler.endOfWrite, 4);
 
 //        buffer[0] = 4 + '0';
 //        // Send command num
@@ -175,16 +192,19 @@ public class Main {
     public static void send_command(
             Firmware_Handler.Firmware_Command command
     ) throws Exception {
-        // Send command num
-        selected_port.writeBytes(command.command_type, 1);
-        // Send start erase address
+//        // Send command num
+//        selected_port.writeBytes(command.command_type, 1);
+//        selected_port.writeBytes(command.getAddress(), 4);
+//        if (!receive_status())
+//            throw new Exception("Response is not ACK");
+//        // Send pages num to erase
+//        selected_port.writeBytes(command.getData(), command.getData().length);
+//        if (!receive_status())
+//            throw new Exception("Response is not ACK");
+//        if (!receive_status())
+//            throw new Exception("Response is not ACK");
         selected_port.writeBytes(command.getAddress(), 4);
-        if (!receive_status())
-            throw new Exception("Response is not ACK");
-        // Send pages num to erase
         selected_port.writeBytes(command.getData(), command.getData().length);
-        if (!receive_status())
-            throw new Exception("Response is not ACK");
         if (!receive_status())
             throw new Exception("Response is not ACK");
     }
