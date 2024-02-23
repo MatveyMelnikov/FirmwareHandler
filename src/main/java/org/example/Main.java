@@ -60,7 +60,5 @@ public class Main {
         fis = new FileInputStream(file);
         int bytes = FirmwareHandler.transmitFirmware(selected_port, fis, addresses);
         System.out.printf("Successfully transmitted: ~%d bytes\n", bytes);
-
-        selected_port.closePort();
     }
 }
